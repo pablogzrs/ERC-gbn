@@ -5,3 +5,50 @@ format: html
 editor: visual
 ---
 
+```{r}
+library(bnlearn)
+data = read.csv("../data/data_clean.csv")
+data$wc = as.numeric(data$wc) # importante que WC sea también float y no integer
+head(data)
+```
+```{r}
+# Dag con HC
+best_dag = hc(data)
+graphviz.plot(best_dag, shape = "ellipse")
+```
+
+```{r}
+# Max y Diego
+dag_max_diego = model2network("[age][bgr][sod][pot][wc|age:bp][bp|age:bgr:sod:pot][sc|bp][bu|bp][hemo|age:bp]")
+graphviz.plot(dag_max_diego, shape = "ellipse")
+```
+```{r}
+# Roomie Angelo
+dag_roomie_angelo = model2network("[age][sod][pot][hemo][bp|age:sod:pot:hemo][bu|age][bgr|age][sc|bp][wc|age]")
+graphviz.plot(dag_roomie_angelo, shape = "ellipse")
+```
+```{r}
+# Val y amiga
+dag_val_amiga = model2network("[age][bu][sc][sod|bu][pot|sc][bp|sod:pot:age][bgr|age][hemo|bp][wc|pot]")
+graphviz.plot(dag_val_amiga, shape = "ellipse")
+```
+```{r}
+# Ajuste de datos
+fit_max_diego = bn.fit(dag_max_diego, data = data)
+fit_roomie_angelo = bn.fit(dag_roomie_angelo, data = data)
+fit_val_amiga = bn.fit(dag_val_amiga, data = data)
+```
+
+```{r}
+# BIC-G y AIC-G 
+score(dag_max_diego, data = data, type = "bic-g")
+score(dag_roomie_angelo, data = data, type = "bic-g")
+score(dag_val_amiga, data = data, type = "bic-g")
+
+score(dag_max_diego, data = data, type = "aic-g")
+score(dag_roomie_angelo, data = data, type = "aic-g")
+score(dag_val_amiga, data = data, type = "aic-g")
+
+# El DAG con menores métricas es el de Valeria
+```
+
