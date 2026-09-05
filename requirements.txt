@@ -1,0 +1,16 @@
+# Core
+pandas
+numpy
+
+# I/O
+pyarrow
+openpyxl
+
+# Exploración y visualización
+matplotlib
+seaborn
+missingno
+
+# Entorno de trabajo
+jupyterlab
+ipykernel

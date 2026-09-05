@@ -1,0 +1,7 @@
+---
+title: "gbn"
+author: "Farfán Torres, Enríquez Ruíz Velasco, Medina Meza, González Rios"
+format: html
+editor: visual
+---
+
