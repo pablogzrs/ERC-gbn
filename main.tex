@@ -1,0 +1,67 @@
+%% AJCEAM-paper.tex
+\documentclass[eng]{ajceam-class}
+
+\title{Redes bayesianas gaussianas con estructura elicitada por estudiantes de medicina: dependencias entre biomarcadores en enfermedad renal crónica}
+\shorttitle{MA2014}
+
+\author[1]{Juan Pedro Enríquez Ruiz Velasco}
+\author[2]{Angelo Dayvis Farfán Torres}
+\author[3]{Pablo Emiliano González Rios}
+\author[5]{Eduardo Medina Meza}
+\affil[1]{Instituto Tecnológico de Estudios Superiores de Monterrey (ITESM), Departamento de Ingeniería y Ciencias, Jalisco, México}
+\firstauthor{Enríquez, Farfán, Medina y González}
+\contactauthor{Name A. Surname}
+\email{name.surname@email.com}
+
+\thisvolume{02}
+\thisnumber{01}
+\thismonth{Septiembre}
+\thisyear{2026}
+\publicationdate{30/08/2026}
+
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+\abstract{
+}
+
+\keywords{
+}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+\newpage
+
+\section{Introducción}
+La Enfermedad Renal Crónica (ERC) afecta a alrededor de 800 millones de personas a nivel global y puede derivar en distintas complicaciones, como retención de líquidos, alteraciones electrolíticas, anemia, complicaciones cardiovasculares y daño renal terminal, entre otras. Dado que muchas de estas complicaciones pueden prevenirse o retrasarse si la enfermedad se detecta a tiempo, resulta fundamental contar con herramientas que ayuden a identificar patrones de riesgo antes de que el daño renal sea severo.
+
+En este trabajo exploramos cómo las Redes Bayesianas Gaussianas pueden ser una herramienta útil para representar y comprender las relaciones entre los distintos biomarcadores asociados a la ERC, con el objetivo de apoyar su detección y prevención temprana. A diferencia de otros modelos estadísticos, las redes bayesianas permiten representar de forma gráfica e interpretable cómo un biomarcador puede influir o depender de otros, lo cual resulta especialmente valioso en un contexto clínico, donde entender el ``por qué'' detrás de una relación es tan importante como predecir un resultado.
+
+Sin embargo, definir correctamente estas relaciones no es una tarea trivial, ya que requiere conocimiento clínico especializado. Por ello, antes de construir nuestro modelo, decidimos apoyarnos en el conocimiento de personas que ya están inmersas en el área de la salud. Visitamos la Escuela de Medicina del campus y entrevistamos a tres estudiantes avanzados de medicina con conocimiento sobre la ERC, a quienes les pedimos que, con base en su experiencia, propusieran un Grafo Acíclico Dirigido (DAG) que representara cómo creían que se relacionaban los biomarcadores relevantes para esta enfermedad. Como resultado, obtuvimos tres estructuras distintas, cada una reflejando una perspectiva particular sobre estas dependencias. Adicionalmente, cada estudiante propuso al menos dos preguntas (\textit{queries}) clínicamente relevantes que podrían responderse utilizando un modelo de este tipo, las cuales utilizamos más adelante para evaluar la utilidad práctica de nuestras redes.
+
+De esta manera, buscamos combinar el conocimiento experto de personas cercanas a la práctica médica con el poder de las redes bayesianas gaussianas, para construir un modelo que no solo sea estadísticamente robusto, sino también clínicamente interpretable y útil.
+
+
+\section{Metodología}
+
+
+\section{Aplicación}
+
+\subsection{Resultados}
+
+\subsection{Discución}
+
+
+\section{Conclusiones}
+
+
+El código, los datos procesados y los resultados completos están disponibles en el repositorio público del proyecto: \url{https://github.com/pablogzrs/ERC-gbn}.
+
+\renewcommand{\refname}{Bibliografía}
+\begin{thebibliography}{99}
+
+
+
+\end{thebibliography}
+
+\end{document}
