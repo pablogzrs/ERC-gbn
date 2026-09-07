@@ -55,15 +55,6 @@ score(dag_val_amiga, data = data, type = "aic-g")
 
 # El DAG con menores métricas es el de Valeria
 ```
-```{r}
-# ¿Qué probabilidad hay de que un adulto mayor(>60) con glucosa alta(>200) tenga potasio(>5) y sodio(>145) altos?
-cpquery(fit_val_amiga, event = (pot > 5.0 & sod > 145), evidence = (age > 60 & bgr > 200), n = 10^6)
-
-```
-```{r}
-# ¿Qué probabilidad hay de que alguien mayor de 70 años tenga presión arterial alrededor de la perfecta(entre 75 y 85)?
-cpquery(fit_val_amiga, event = (bp >= 75 & bp <= 85), evidence = age > 70, n = 10^6)
-```
 
 ```{r}
 resultados <- data.frame(
@@ -191,4 +182,15 @@ comparacion_np <- data.frame(
   aic = c(score(best_dag, data = data, type = "aic-g"), -as.numeric(aic_np_total))
 )
 comparacion_np
+```
+
+```{r}
+# ¿Qué probabilidad hay de que un adulto mayor(>60) con glucosa alta(>200) tenga potasio(>5) y sodio(>145) altos?
+cpquery(fit_val_amiga, event = (pot > 5.0 & sod > 145), evidence = (age > 60 & bgr > 200), n = 10^6)
+
+```
+
+```{r}
+# ¿Qué probabilidad hay de que alguien mayor de 70 años tenga presión arterial alrededor de la perfecta(entre 75 y 85)?
+cpquery(fit_val_amiga, event = (bp >= 75 & bp <= 85), evidence = age > 70, n = 10^6)
 ```
