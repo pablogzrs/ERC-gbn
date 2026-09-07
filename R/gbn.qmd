@@ -11,6 +11,7 @@ data = read.csv("../data/data_clean.csv")
 data$wc = as.numeric(data$wc) # importante que WC sea también float y no integer
 head(data)
 ```
+
 ```{r}
 # Dag con HC
 best_dag = hc(data)
@@ -22,16 +23,19 @@ graphviz.plot(best_dag, shape = "ellipse")
 dag_max_diego = model2network("[age][bgr][sod][pot][wc|age:bp][bp|age:bgr:sod:pot][sc|bp][bu|bp][hemo|age:bp]")
 graphviz.plot(dag_max_diego, shape = "ellipse")
 ```
+
 ```{r}
 # Roomie Angelo
 dag_roomie_angelo = model2network("[age][sod][pot][hemo][bp|age:sod:pot:hemo][bu|age][bgr|age][sc|bp][wc|age]")
 graphviz.plot(dag_roomie_angelo, shape = "ellipse")
 ```
+
 ```{r}
-# Val y amiga
+# Val y Grecia
 dag_val_amiga = model2network("[age][bu][sc][sod|bu][pot|sc][bp|sod:pot:age][bgr|age][hemo|bp][wc|pot]")
 graphviz.plot(dag_val_amiga, shape = "ellipse")
 ```
+
 ```{r}
 # Ajuste de datos
 fit_max_diego = bn.fit(dag_max_diego, data = data)
@@ -50,5 +54,14 @@ score(dag_roomie_angelo, data = data, type = "aic-g")
 score(dag_val_amiga, data = data, type = "aic-g")
 
 # El DAG con menores métricas es el de Valeria
+```
+```{r}
+# ¿Qué probabilidad hay de que un adulto mayor(>60) con glucosa alta(>200) tenga potasio(>5) y sodio(>145) altos?
+cpquery(fit_val_amiga, event = (pot > 5.0 & sod > 145), evidence = (age > 60 & bgr > 200), n = 10^6)
+
+```
+```{r}
+# ¿Qué probabilidad hay de que alguien mayor de 70 años tenga presión arterial alrededor de la perfecta(entre 75 y 85)?
+cpquery(fit_val_amiga, event = (bp >= 75 & bp <= 85), evidence = age > 70, n = 10^6)
 ```
 
