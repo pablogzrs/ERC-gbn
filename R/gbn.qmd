@@ -69,12 +69,117 @@ resultados <- data.frame(
           score(dag_val_amiga, data, type="aic-g"))
 )
 resultados
+
 ```
 
-```{#{r}
-#set.seed(123)
+```{r}
+# Kernel Gaussiano 
+K = function(x){return(exp(-(x^2)/2)/sqrt(2*pi))}
 
-#cpquery(fit_val_amiga,
- #       event = (),
-  #      evidence = ())
+```
+
+```{r}
+# Peso Nadaraya-Watson multivariado usando el kernel gaussiano
+# x0: punto donde se evalua, xi: fila de datos, bw: vector de bandwidths (uno por predictor)
+nw_weight = function(x0, xi, bw){
+  return(prod(K((x0 - xi) / bw)))
+}
+```
+
+```{r}
+# Regresion Nadaraya-Watson completa: calcula valores ajustados y la diagonal
+# de la matriz "hat" (para aproximar grados de libertad efectivos)
+nw_fit = function(X, y, bw){
+  X = as.matrix(X)
+  n = nrow(X)
+  fitted = numeric(n)
+  hii = numeric(n)
+  
+  for(i in 1:n){
+    w = apply(X, 1, function(row) nw_weight(X[i, ], row, bw))
+    fitted[i] = sum(w * y) / sum(w)
+    hii[i] = w[i] / sum(w)
+  }
+  
+  return(list(fitted = fitted, hii = hii))
+}
+```
+
+```{r}
+# Bandwidth por regla de Silverman para cada predictor
+silverman_bw = function(x){
+  n = length(x)
+  return(1.06 * sd(x) * n^(-1/5))
+}
+```
+
+```{r}
+# Ajuste no parametrico por nodo, segun los padres del DAG (ejemplo: hc)
+bw_age_bp = silverman_bw(data$age)
+fit_np_bp = nw_fit(X = data[, "age", drop = FALSE], y = data$bp, bw = bw_age_bp)
+
+bw_bp_sc = silverman_bw(data$bp)
+fit_np_sc = nw_fit(X = data[, "bp", drop = FALSE], y = data$sc, bw = bw_bp_sc)
+
+bw_bp_bu = silverman_bw(data$bp)
+fit_np_bu = nw_fit(X = data[, "bp", drop = FALSE], y = data$bu, bw = bw_bp_bu)
+
+bw_hemo = c(silverman_bw(data$age), silverman_bw(data$bp))
+fit_np_hemo = nw_fit(X = data[, c("age", "bp")], y = data$hemo, bw = bw_hemo)
+
+bw_wc = c(silverman_bw(data$age), silverman_bw(data$bp))
+fit_np_wc = nw_fit(X = data[, c("age", "bp")], y = data$wc, bw = bw_wc)
+```
+
+```{r}
+# Funcion para calcular AIC y BIC a partir de los residuales y la traza de la matriz hat
+aic_bic_nw = function(modelo, y){
+  n = length(y)
+  rss = sum((y - modelo$fitted)^2)
+  k = sum(modelo$hii)  # grados de libertad efectivos (traza de la matriz hat)
+  
+  aic = n * log(rss / n) + 2 * k
+  bic = n * log(rss / n) + k * log(n)
+  
+  return(c(aic = aic, bic = bic))
+}
+```
+
+```{r}
+# Calcular AIC y BIC para cada nodo no parametrico
+resultados_np_bp = aic_bic_nw(fit_np_bp, data$bp)
+resultados_np_sc = aic_bic_nw(fit_np_sc, data$sc)
+resultados_np_bu = aic_bic_nw(fit_np_bu, data$bu)
+resultados_np_hemo = aic_bic_nw(fit_np_hemo, data$hemo)
+resultados_np_wc = aic_bic_nw(fit_np_wc, data$wc)
+
+resultados_np_bp
+resultados_np_sc
+resultados_np_bu
+resultados_np_hemo
+resultados_np_wc
+```
+
+```{r}
+# Suma total de AIC y BIC no parametrico
+aic_np_total = resultados_np_bp["aic"] + resultados_np_sc["aic"] + resultados_np_bu["aic"] + resultados_np_hemo["aic"] + resultados_np_wc["aic"]
+bic_np_total = resultados_np_bp["bic"] + resultados_np_sc["bic"] + resultados_np_bu["bic"] + resultados_np_hemo["bic"] + resultados_np_wc["bic"]
+
+aic_np_total
+bic_np_total
+```
+
+```{r}
+library(bnlearn)
+```
+
+```{r}
+# Comparacion final: parametrico (GBN) vs no parametrico (kernel gaussiano)
+# Comparacion final: parametrico (GBN) vs no parametrico (kernel gaussiano)
+comparacion_np <- data.frame(
+  modelo = c("hc (GBN)", "hc (kernel gaussiano)"),
+  bic = c(score(best_dag, data = data, type = "bic-g"), -as.numeric(bic_np_total)),
+  aic = c(score(best_dag, data = data, type = "aic-g"), -as.numeric(aic_np_total))
+)
+comparacion_np
 ```
